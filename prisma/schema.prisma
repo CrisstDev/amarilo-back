@@ -1,0 +1,78 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+model user {
+ id Int             @id @default(autoincrement())
+ name String?       @db.VarChar
+ last_name String?  @db.VarChar
+ phone String?      @db.VarChar
+ is_active Boolean  @db.Boolean
+ user_has_project user_has_project[] 
+}
+
+model user_has_project {
+ id Int                         @id @default(autoincrement())
+ user Int
+ user_relation user             @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user")
+ project Int
+ project_relation  project      @relation(fields: [project], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project")
+ is_active Boolean
+ created_at DateTime
+ updated_at DateTime
+}
+
+model project {
+ id Int                @id @default(autoincrement())
+ name String           @db.VarChar
+ location String?      @db.VarChar
+ status Int?           @default(1)
+ init_date DateTime    @db.Timestamp(6)
+ finish_date DateTime  @db.Timestamp(6)
+ created_at DateTime   @default(now()) @db.Timestamp(6)       
+ updated_at DateTime   @db.Timestamp(6)
+ user_has_project user_has_project[]
+ machinery_has_project machinery_has_project[]
+}
+
+model machinery {
+ id Int                 @id @default(autoincrement())
+ status Int?        
+ weight Float?          @db.Real
+ type String            @db.VarChar()
+ created_at DateTime    @db.Timestamp()
+ updated_at DateTime    @db.Timestamp()
+ machinery_has_stock machinery_has_stock []
+}
+
+model machinery_has_project {
+ id Int                 @id @default(autoincrement())
+ project Int
+ project_relation project @relation(fields: [project], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project")
+ stock Int
+ stock_relation stock @relation(fields: [stock], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "stock")
+}
+
+model machinery_has_stock {
+ id Int                 @id @default(autoincrement())
+ stock Int?
+ stock_relation         stock? @relation(fields: [stock], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "stock")
+ machinery Int?
+ machinery_relation     machinery? @relation(fields: [machinery], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machinery")
+}
+
+model stock {
+ id Int                     @id @default(autoincrement())
+ engine_number String       @db.VarChar()
+ chassis_number String      @db.VarChar()
+ status Int?
+ created_at DateTime        @default(now()) @db.Timestamp(6) 
+ updated_at DateTime        @db.Timestamp(6)
+ machinery_has_stock machinery_has_stock[]
+ machinery_has_project machinery_has_project[]
+}
