@@ -13,7 +13,10 @@ export class MachineriesService {
         try {
 
             return await this.prisma.stock.create({
-                data: createStock
+                data: {
+                    ...createStock,
+                    status: StatusStock[createStock.status]
+                }
             });
 
         } catch (error) {

@@ -2,7 +2,7 @@ export class CreateStock {
     machinery: number;
     engine_number: string;
     chassis_number: string;
-    status: number; 
+    status: string; 
 }
 
 export enum StatusStock {
